@@ -12,7 +12,8 @@ import org.apache.camel.spi.UriPath;
 /**
  * Represents a CamelSalesForceCSV endpoint.
  */
-@UriEndpoint(scheme = "sfcsv", title = "CamelSalesForceCSV" syntax="sfcsv:name", consumerClass = CamelSalesForceCSVConsumer.class, label = "CamelSalesForceCSV")
+@UriEndpoint(scheme = "sfcsv", title = "CamelSalesForceCSV", syntax="sfcsv:name",
+        consumerClass = CamelSalesForceCSVConsumer.class, label = "CamelSalesForceCSV")
 public class CamelSalesForceCSVEndpoint extends DefaultEndpoint {
     @UriPath @Metadata(required = "true")
     private String name;
