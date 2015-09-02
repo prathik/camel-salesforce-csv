@@ -1,10 +1,11 @@
 package com.inmobi.bizops;
 
-import java.util.Date;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.impl.ScheduledPollConsumer;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 /**
  * The CamelSalesForceCSV consumer.
@@ -21,9 +22,8 @@ public class CamelSalesForceCSVConsumer extends ScheduledPollConsumer {
     protected int poll() throws Exception {
         Exchange exchange = endpoint.createExchange();
 
-        // create a message body
-        Date now = new Date();
-        exchange.getIn().setBody("Hello World! The time is " + now);
+        InputStream data = new FileInputStream("src/test/test.csv");
+        exchange.getIn().setBody(data, InputStream.class);
 
         try {
             // send message to next processor in the route

@@ -20,20 +20,21 @@ public class BulkUploader implements Uploader {
     private String userName;
     private String password;
     private String endPoint;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOG = LoggerFactory.getLogger(BulkUploader.class);
 
     public void setBatchSize(int batchSize) {
         this.batchSize = batchSize;
     }
 
-    private int batchSize = 10;
+    private int batchSize = 1000;
 
 
     public BulkUploader() {
         Properties prop = new Properties();
         InputStream input = null;
         try {
-            input = new FileInputStream("config.properties");
+            input = this.getClass().getClassLoader().
+                    getResourceAsStream("config.properties");
             prop.load(input);
             userName = prop.getProperty("email");
             password = prop.getProperty("password");
@@ -56,12 +57,19 @@ public class BulkUploader implements Uploader {
     /**
      * Creates a Bulk API job and uploads batches for a CSV file.
      */
-    public void upload(String sobjectType, String sampleFileName)
+    public void upload(String sobjectType, String fileName)
+            throws AsyncApiException, ConnectionException, IOException {
+        upload(sobjectType, new FileInputStream(fileName));
+    }
+
+    /**
+     * Creates a Bulk API job and uploads batches for a input stream.
+     */
+    public void upload(String sobjectType, InputStream in)
             throws AsyncApiException, ConnectionException, IOException {
         BulkConnection connection = getBulkConnection(userName, password);
         JobInfo job = createJob(sobjectType, connection);
-        List<BatchInfo> batchInfoList = createBatchesFromCSVFile(connection, job,
-                sampleFileName);
+        List<BatchInfo> batchInfoList = createBatchesFromCSVFile(connection, job, in);
         closeJob(connection, job.getId());
         awaitCompletion(connection, job, batchInfoList);
         checkResults(connection, job, batchInfoList);
@@ -93,10 +101,10 @@ public class BulkUploader implements Uploader {
                 String error = resultInfo.get("Error");
                 if (success && created) {
                     System.out.println("Created row with id " + id);
-                    logger.info("Created row with id " + id);
+                    LOG.info("Created row with id " + id);
                 } else if (!success) {
                     System.out.println("Failed with error: " + error);
-                    logger.error("Failed with error: " + error);
+                    LOG.error("Failed with error: " + error);
                 }
             }
         }
@@ -136,7 +144,9 @@ public class BulkUploader implements Uploader {
         while (!incomplete.isEmpty()) {
             try {
                 Thread.sleep(sleepTime);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+                LOG.error("Error in sleeping, when does that happen?");
+            }
             System.out.println("Awaiting results..." + incomplete.size());
             sleepTime = 10000L;
             BatchInfo[] statusList =
@@ -220,15 +230,15 @@ public class BulkUploader implements Uploader {
      *            Connection to use for creating batches
      * @param jobInfo
      *            Job associated with new batches
-     * @param csvFileName
-     *            The source file for batch data
+     * @param in
+     *            InputStream of the CSV file
      */
     private List<BatchInfo> createBatchesFromCSVFile(BulkConnection connection,
-                                                     JobInfo jobInfo, String csvFileName)
+                                                     JobInfo jobInfo, InputStream in)
             throws IOException, AsyncApiException {
         List<BatchInfo> batchInfos = new ArrayList<BatchInfo>();
         BufferedReader rdr = new BufferedReader(
-                new InputStreamReader(new FileInputStream(csvFileName))
+                new InputStreamReader(in)
         );
         // read the CSV header row
         byte[] headerBytes = (rdr.readLine() + "\n").getBytes("UTF-8");

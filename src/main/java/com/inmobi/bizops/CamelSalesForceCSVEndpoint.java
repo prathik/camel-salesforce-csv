@@ -15,10 +15,14 @@ import org.apache.camel.spi.UriPath;
 @UriEndpoint(scheme = "sfcsv", title = "CamelSalesForceCSV", syntax="sfcsv:name",
         consumerClass = CamelSalesForceCSVConsumer.class, label = "CamelSalesForceCSV")
 public class CamelSalesForceCSVEndpoint extends DefaultEndpoint {
-    @UriPath @Metadata(required = "true")
+    @UriPath(enums = "start,upload") @Metadata(required = "true")
     private String name;
-    @UriParam(defaultValue = "10")
-    private int option = 10;
+
+    @UriParam(defaultValue = "1000")
+    private int batchSize = 1000;
+
+    @UriParam @Metadata(required = "true")
+    private String object;
 
     public CamelSalesForceCSVEndpoint() {
     }
@@ -51,11 +55,19 @@ public class CamelSalesForceCSVEndpoint extends DefaultEndpoint {
         return name;
     }
 
-    public void setOption(int option) {
-        this.option = option;
+    public int getBatchSize() {
+        return batchSize;
     }
 
-    public int getOption() {
-        return option;
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
+    }
+
+    public String getObject() {
+        return object;
+    }
+
+    public void setObject(String object) {
+        this.object = object;
     }
 }
