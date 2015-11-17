@@ -2,6 +2,10 @@
 
 Push CSV files into Salesforce from Camel
 
+##Installation
+
+    mvn install
+
 ##Usage
 
 Route to defined as
