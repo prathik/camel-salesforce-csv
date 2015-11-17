@@ -22,7 +22,7 @@ public class CamelSalesForceCSVComponentTest extends CamelTestSupport {
         return new RouteBuilder() {
             public void configure() {
                 from("sfcsv://foo")
-                        .to("sfcsv://upload?batchSize=100`0&object=Pub_Sites_Staging__c")
+                        .to("sfcsv://upload?batchSize=1000&object=Pub_Sites_Staging__c")
                         .to("mock:result");
             }
         };

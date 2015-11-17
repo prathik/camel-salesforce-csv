@@ -7,7 +7,7 @@
     <groupId>com.inmobi.bizops</groupId>
     <artifactId>camel-salesforce-csv</artifactId>
     <packaging>bundle</packaging>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
 
     <name>Camel SalesForceCSV Component</name>
     <url>http://www.inmobi.com</url>
