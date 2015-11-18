@@ -8,7 +8,7 @@ Camel provides support for different type of systems such as MySQL, file systems
 
 ##Why salesforce csv component?
 
-This component focuses on uploading csv only. You can transform output from any system to a csv and upload it to Salesforce.
+This component focuses on uploading csv only. You can transform output from any system to a csv and upload it to Salesforce. It is simple, it is intuitive.
 
 ##Why not other camel salesforce components?
 
