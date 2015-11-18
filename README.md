@@ -1,6 +1,6 @@
 #Camel Salesforce CSV component
 
-Push CSV files into Salesforce from Camel
+Upload CSV to Salesforce using Apache Camel
 
 ##Why Apache Camel?
 
